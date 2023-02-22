@@ -1,5 +1,4 @@
 module reg_file(input logic [2:0] read_reg1, read_reg2, write_reg,
-                 input logic RegWrite,
                  input logic [31:0] write_data, // FIXME: what should be the size of register?
                  output logic [31:0] read_data1, read_data2);
 

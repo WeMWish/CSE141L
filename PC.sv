@@ -1,7 +1,7 @@
 // using template from the Professor's lecture
 
 module PgmCtr (
-    input init, jump_en, branch_en, CLK,
+    input init, CLK,
     output logic halt,
     output logic [9:0] PC
 );
