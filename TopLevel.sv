@@ -1,4 +1,5 @@
 // use template from the Professor's lecture
+// FIXME: still a little mess up here. lots of unnecessary code
 
 module TopLevel (
     input  start,
@@ -67,3 +68,25 @@ module TopLevel (
         .MEM_TO_REG,
         .HALT(halt)
     );
+
+    reg_file register_module (
+        .CLK,
+        .RegWrite   (REG_WRITE),
+        .srcA  ({1'b0, Instruction[8:6]}),
+        .srcB  ({1'b0, Instruction[2:0]}),
+        .writeReg   (write_register),
+        .writeValue (regWriteValue),
+        .ReadA,
+        .ReadB
+    )
+
+    ALU ALU_Module (
+        .OP (ALU_OP),
+        .INPUT_A  (ReadA),
+        .INPUT_B  (ALUInputB),
+        .OUT   (ALU_OUT),
+        .ZERO,
+        .EQUAL (EQ)
+    )
+
+    
