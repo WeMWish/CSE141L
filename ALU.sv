@@ -1,12 +1,13 @@
 // using template from the Professor's lecture
 // FIXME: need to chnage this to my own instructions
 
+import definitions::*;
+
 module ALU(
     input [7:0] INPUT_A,    
     input [7:0] INPUT_B,
     input [2:0] ALU_OP, // ALU opcode, part of microcode
     input       SC_IN,  // shift in/carry in
-    output logic [7:0] OUTPUT,  // or: output reg [7:0] OUTPUT
     output logic SC_OUT,    // shift out/carry out
     output logic ZERO,  // zero out flag
     output logic BEVEN  // LSB of input B = 0

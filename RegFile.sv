@@ -1,18 +1,18 @@
-module reg_file(input logic [2:0] read_reg1, read_reg2, write_reg,
-                 input logic [31:0] write_data, // FIXME: what should be the size of register?
-                 output logic [31:0] read_data1, read_data2);
+module RegFile (parameter W=8, D=3) (
+    input   CLK, RESET, WRITE_ENABLE,
+    input   [D-1:0] readA, readB, write
+    input   [W-1:0] dataIn
+    output  [W-1:0] outA, outB
+);
 
-    logic [31:0] registers [7:0];
+logic [W-1:0] Registers[2**D];
 
-    always @(read_reg1, read_reg2) begin
-        read_data1 = registers[read_reg1];
-        read_data2 = registers[read_reg2];
-    end
-
-    always @ (posedge clk) begin
-        if (write_enable) begin
-            registers[write_reg] <= write_data;
+always_ff @(posedge CLK) begin
+    if (RESET) begin
+        for (int i = 0; i < 2**D; i++) begin
+            Registers[i] <= 0;
         end
+    else if (WRITE_ENABLE) begin
+        Registers[write] <= dataIn;
     end
-
-endmodule
+end

@@ -2,7 +2,7 @@
 // FIXME: still a little mess up here. lots of unnecessary code
 
 module TopLevel (
-    input  start,
+    input  RESET,
     input   CLK,
     output  halt
 );
