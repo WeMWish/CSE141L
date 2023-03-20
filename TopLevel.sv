@@ -2,7 +2,7 @@
 // FIXME: still a little mess up here. lots of unnecessary code
 
 module TopLevel (
-    input  RESET,
+    input  start,
     input   CLK,
     output  halt
 );
@@ -11,7 +11,7 @@ module TopLevel (
     wire    REG_WRITE;
     wire [7:0]  memwriteValue;
     wire    MEM_WRITE;
-    wire [7:0]  PC;
+    wire [9:0]  PC;
     wire    BRANCH;
     logic [7:0]  InstCounter;
     wire [8:0]  instruction;
@@ -40,38 +40,24 @@ module TopLevel (
     wire [7:0] ALUInputB;
 
 // fetch module
-    IF if_module (
-        .BRANCH (BRANCH & ZERO),
-        .Target ({5'b00000, Instruction[2:0]}),
+    PgmCtr pc_module (
+        // .BRANCH (BRANCH & ZERO),
+        // .Target ({5'b00000, Instruction[2:0]}),
         .Init   (start),
-        .Halt   (halt),
         .CLK,
+        .Halt   (halt),
         .PC
     )
 
-// instruction ROM
-    InstROM inst_rom (
+    instruction_memory inst_rom (
         .InstAddress    (PC),
         .InstOut    (Instruction)
     );
 
-// control module
-    Control control_module (
-        .OPCODE(Instruction[8:3]),
-        .ALU_OP,
-        .ALU_SRC_B,
-        .REG_WRITE,
-        .BRANCH
-        .MEM_READ,
-        .MEM_WRITE,
-        .REG_DST,
-        .MEM_TO_REG,
-        .HALT(halt)
-    );
-
-    reg_file register_module (
+    RegFile register_module (
         .CLK,
-        .RegWrite   (REG_WRITE),
+        .RESET
+        .WRITE_ENABLE   (REG_WRITE),
         .srcA  ({1'b0, Instruction[8:6]}),
         .srcB  ({1'b0, Instruction[2:0]}),
         .writeReg   (write_register),
@@ -81,9 +67,8 @@ module TopLevel (
     )
 
     ALU ALU_Module (
-        .OP (ALU_OP),
-        .INPUT_A  (ReadA),
-        .INPUT_B  (ALUInputB),
+        .INPUT_A  (INPUT_A),
+        .INPUT_B  (INPUT_B),
         .OUT   (ALU_OUT),
         .ZERO,
         .EQUAL (EQ)

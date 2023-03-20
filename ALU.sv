@@ -18,7 +18,7 @@ module ALU(
         {SC_OUT, OUT} = 0;
         // single instruction for both LSW & MSW
     case (OP)
-        kADD : {SC_OUT, OUT} = {1'b0, INPUT_A} + INPUT_B + SC_IN; // add
+        3'b000 : {SC_OUT, OUT} = {1'b0, INPUT_A} + INPUT_B + SC_IN; // add
         kLSH : {SC_OUT, OUT} = {INPUT_A, SC_IN}; // shift left
         kRSH : {SC_OUT, OUT} = {SC_IN, INPUT_A}; // shift right
         kXOR : begin
@@ -33,5 +33,24 @@ module ALU(
             OUT = INPUT_A + (~INPUT_B) + SC_IN // subtract
             SC_OUT = 0;
         end
-        default: {SC_OUT, OUT} = 0;
+
+        3'b110 : begin
+            OUT = {
+                INPUT_A[2:0], INPUT_B[7:4], ^(INPUT_A[2:0], INPUT_B[7:4])
+            };
+        end
+
+        3'b111 : begin
+            OUT = {
+                INPUT_B[3:1], 
+                ^(INPUT_A[2:0], INPUT_B[7], INPUT_B[3:1]),
+                INPUT_B[0],
+                ^(INPUT_A[2:1], INPUT_B[6:5], INPUT_B[3:2], INPUT_B[0]),
+                ^(
+                    INPUT_A[2:0], INPUT_B[7:0],
+                     ^(INPUT_A[2:0], INPUT_B[7:4]),
+                      ^(INPUT_A[2:0], INPUT_B[7], INPUT_B[3:1]),
+                       ^(INPUT_A[2:1], INPUT_B[6:5], INPUT_B[3:2], INPUT_B[0]))
+            };
+        end
     endcase
